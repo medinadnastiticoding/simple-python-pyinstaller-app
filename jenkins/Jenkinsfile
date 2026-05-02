@@ -1,5 +1,6 @@
 // scripted pipeline
 node {
+    checkout scm
 
     def dockerImage = docker.image('python:3.11')
 
@@ -45,6 +46,4 @@ node {
         
         // if (currentBuild.result == 'UNSTABLE') return
     } // end of dockerImage
-
-
 }
