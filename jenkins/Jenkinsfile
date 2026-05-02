@@ -1,31 +1,44 @@
 // scripted pipeline
 node {
-    stage('Build') {
-        sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
-    }
 
-    if (currentBuild.result == 'UNSTABLE') return
-    
-    stage('Test') {
-        try {
-            sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-        } finally {
-            junit 'test-reports/results.xml'
-        }
-    }
+    def dockerImage = docker.image('python:3.11')
 
-    if (currentBuild.result == 'UNSTABLE') return
+    dockerImage.inside() {
+        
+        env.CI = 'true'
 
-    stage('Deliver') {
-        try {
-            sh 'pyinstaller --onefile sources/add2vals.py'
+        stage('Build') {
+            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+        } // end o stage build
+        
+        if (currentBuild.result == 'UNSTABLE') return
+        
 
-            archiveArtifacts 'dist/add2vals'
-        } catch(err) {
-            currentBuild.result = 'FAILURE'
-            throw err
-        }
-    }
+        stage('Test') {
+            try {
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+            } finally {
+                junit 'test-reports/results.xml'
+            }
+        } // end o stage test
+        
+        if (currentBuild.result == 'UNSTABLE') return
 
-    if (currentBuild.result == 'UNSTABLE') return
+
+        stage('Deliver') {
+            try {
+                sh 'pip install pyinstaller'
+                sh 'pyinstaller --onefile sources/add2vals.py'
+
+                archiveArtifacts 'dist/add2vals'
+            } catch(err) {
+                currentBuild.result = 'FAILURE'
+                throw err
+            }
+        } // end o stage deliver
+        
+        if (currentBuild.result == 'UNSTABLE') return
+    } // end of dockerImage
+
+
 }
