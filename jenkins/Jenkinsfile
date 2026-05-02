@@ -2,9 +2,7 @@
 node {
     checkout scm // ambil repository terbaru
 
-    def dockerImage = docker.image('my-python-ci')
-
-    dockerImage.inside() {
+    docker.image('my-python-ci').inside() {
         
         env.CI = 'true'
 
