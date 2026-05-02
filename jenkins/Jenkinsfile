@@ -1,6 +1,6 @@
 // scripted pipeline
 node {
-    checkout scm
+    // checkout scm
 
     def dockerImage = docker.image('python:3.11')
 
