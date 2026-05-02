@@ -6,7 +6,8 @@ node {
     checkout scm 
 
     // def dockerImage = docker.image('python:3.11')
-    def dockerImage = docker.image('my-python-ci')
+    // def dockerImage = docker.image('my-python-ci') // ngga jalan
+    def dockerImage = docker.build('my-python-ci', './python-ci')
 
     dockerImage.inside() {
         
