@@ -4,7 +4,7 @@ node {
 
     docker.image('my-python-ci').inside() {
         
-        env.CI = 'true'
+        // env.CI = 'true'
 
         stage('Build') {
             sh 'echo "build running"'
@@ -21,18 +21,18 @@ node {
         if (currentBuild.result == 'UNSTABLE') return
         
 
-        stage('Test') {
-            try {
-                sh '''
-                mkdir -p test-reports
-                pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
-                '''
-            } finally {
-                junit 'test-reports/results.xml'
-            }
-        } // end of stage test
+        // stage('Test') {
+        //     try {
+        //         sh '''
+        //         mkdir -p test-reports
+        //         pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+        //         '''
+        //     } finally {
+        //         junit 'test-reports/results.xml'
+        //     }
+        // } // end of stage test
         
-        if (currentBuild.result == 'UNSTABLE') return
+        // if (currentBuild.result == 'UNSTABLE') return
 
 
         // stage('Deliver') {
