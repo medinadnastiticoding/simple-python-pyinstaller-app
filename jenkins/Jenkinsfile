@@ -1,6 +1,6 @@
 // scripted pipeline
 node {
-    // checkout scm
+    checkout scm // ambil repository terbaru
 
     def dockerImage = docker.image('python:3.11')
 
@@ -16,34 +16,34 @@ node {
             echo "=== DEBUG END ==="
             '''
             sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
-        } // end o stage build
+        } // end of stage build
         
         if (currentBuild.result == 'UNSTABLE') return
         
 
-        // stage('Test') {
-        //     try {
-        //         sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-        //     } finally {
-        //         junit 'test-reports/results.xml'
-        //     }
-        // } // end o stage test
+        stage('Test') {
+            try {
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+            } finally {
+                junit 'test-reports/results.xml'
+            }
+        } // end of stage test
         
-        // if (currentBuild.result == 'UNSTABLE') return
+        if (currentBuild.result == 'UNSTABLE') return
 
 
-        // stage('Deliver') {
-        //     try {
-        //         sh 'pip install pyinstaller'
-        //         sh 'pyinstaller --onefile sources/add2vals.py'
+        stage('Deliver') {
+            try {
+                sh 'pip install pyinstaller'
+                sh 'pyinstaller --onefile sources/add2vals.py'
 
-        //         archiveArtifacts 'dist/add2vals'
-        //     } catch(err) {
-        //         currentBuild.result = 'FAILURE'
-        //         throw err
-        //     }
-        // } // end o stage deliver
+                archiveArtifacts 'dist/add2vals'
+            } catch(err) {
+                currentBuild.result = 'FAILURE'
+                throw err
+            }
+        } // end of stage deliver
         
-        // if (currentBuild.result == 'UNSTABLE') return
+        if (currentBuild.result == 'UNSTABLE') return
     } // end of dockerImage
 }
