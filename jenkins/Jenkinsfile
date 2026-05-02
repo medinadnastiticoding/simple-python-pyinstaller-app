@@ -8,9 +8,13 @@ node {
         env.CI = 'true'
 
         stage('Build') {
-            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+            sh '''
+            echo "=== DEBUG START ==="
             pwd
             ls -R
+            echo "=== DEBUG END ==="
+            '''
+            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
         } // end o stage build
         
         if (currentBuild.result == 'UNSTABLE') return
