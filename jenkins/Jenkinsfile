@@ -2,7 +2,7 @@
 node {
     checkout scm // ambil repository terbaru
 
-    def dockerImage = docker.image('python:3.11')
+    def dockerImage = docker.image('my-python-ci')
 
     dockerImage.inside() {
         
@@ -26,7 +26,6 @@ node {
             try {
                 sh '''
                 mkdir -p test-reports
-                pip install pytest
                 pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
                 '''
             } finally {
