@@ -8,14 +8,14 @@ node {
 
         stage('Build') {
             sh 'echo "build running"'
-            sh '''
-            echo "=== DEBUG START ==="
-            pwd
-            ls -R
-            cat test-reports/results.xml || echo "NO REPORT FILE"
-            echo "=== DEBUG END ==="
-            '''
-            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+            // sh '''
+            // echo "=== DEBUG START ==="
+            // pwd
+            // ls -R
+            // cat test-reports/results.xml || echo "NO REPORT FILE"
+            // echo "=== DEBUG END ==="
+            // '''
+            // sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
         } // end of stage build
         
         if (currentBuild.result == 'UNSTABLE') return
