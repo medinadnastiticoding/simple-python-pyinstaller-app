@@ -9,17 +9,17 @@ node {
         
         env.CI = 'true' // atur environment
 
-        // Stage: Debug
-        stage('Debug'){
-            // echo 'Hello from Stage: Debug'
-            sh '''
-            echo "=== DEBUG START ==="
-            pwd
-            ls -R
-            cat test-reports/results.xml || echo "NO REPORT FILE"
-            echo "=== DEBUG END ==="
-            '''
-        }
+        // // Stage: Debug
+        // stage('Debug'){
+        //     // echo 'Hello from Stage: Debug'
+        //     sh '''
+        //     echo "=== DEBUG START ==="
+        //     pwd
+        //     ls -R
+        //     cat test-reports/results.xml || echo "NO REPORT FILE"
+        //     echo "=== DEBUG END ==="
+        //     '''
+        // }
 
 
         // Stage: Build
