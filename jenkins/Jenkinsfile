@@ -11,7 +11,6 @@ node {
 
         // Stage: Debug
         stage('Debug'){
-            // echo 'Hello from Stage: Debug'
             sh '''
             echo "=== DEBUG START ==="
             pwd
@@ -24,8 +23,6 @@ node {
 
         // Stage: Build
         stage('Build') {
-            // echo 'Hello from Stage: Build'
-
             echo "=== BUILD START ==="
             sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
             echo "=== BUILD END ==="
@@ -35,8 +32,6 @@ node {
 
         // Stage: Test
         stage('Test') {
-            // echo 'Hello from Stage: Test'
-            
             echo "=== DEPLOY START ==="
             try {
                 sh '''
@@ -53,8 +48,6 @@ node {
 
         // Stage: Deliver
         stage('Deliver') {
-            // echo 'Hello from Stage: Deliver'
-
             echo "=== DELIVER START ==="
             try {
                 // make python file into executable
@@ -111,9 +104,6 @@ node {
 
         // Stage: Deploy
         stage('Deploy') {
-
-            // echo 'Hello from Stage: Deploy'
-
             echo "=== DEPLOY START ==="
             
             // run the app in the background
