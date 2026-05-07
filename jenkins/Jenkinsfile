@@ -86,14 +86,19 @@ node {
 
             try{
                 // set timer for timeout
-                timeout(time: 1, unit: 'MINUTES'){
+                timeout(time: 1, unit: 'MINUTES') {
                     input(
                         message: 'Artifact aplikasi siap di-deploy, lanjutkan proses?',
                         ok: 'Deploy'
                     )
                 } // end of timeout
             } catch(err) {
-                echo "Batas waktu untuk Approval sudah tercapai. Deployment harus disetujui dalam waktu 15 menit."
+
+                if (err.toString().contains('Timeout')) {
+                    echo "Batas waktu untuk Approval sudah tercapai. Deployment harus disetujui dalam waktu 15 menit."
+                } else {
+                    echo "Approval untuk deployment aplikasi dibatalkan."
+                }
 
                 currentBuild.result = 'ABORTED'
                 throw err
@@ -119,7 +124,7 @@ node {
             
             try{
                 // set timer for timeout
-                timeout(time: 1, unit: 'MINUTES'){
+                timeout(time: 1, unit: 'MINUTES') {
                     input(
                         message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
                         ok: 'Proceed'
@@ -127,7 +132,7 @@ node {
                 } // end of timeout
             } finally {
                 // notif of forcing the app to stop running
-                echo 'Stop the application.'
+                echo 'Aplikasi berhenti dijalankan.'
 
                 // stop the app
                 sh '''
