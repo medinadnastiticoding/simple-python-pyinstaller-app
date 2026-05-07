@@ -11,49 +11,58 @@ node {
 
         // Stage: Debug
         stage('Debug'){
-            sh '''
-            echo "=== DEBUG START ==="
-            pwd
-            ls -R
-            cat test-reports/results.xml || echo "NO REPORT FILE"
-            echo "=== DEBUG END ==="
-            '''
+            echo 'Hello from Stage: Debug'
+            // sh '''
+            // echo "=== DEBUG START ==="
+            // pwd
+            // ls -R
+            // cat test-reports/results.xml || echo "NO REPORT FILE"
+            // echo "=== DEBUG END ==="
+            // '''
         }
 
 
         // Stage: Build
         stage('Build') {
-            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+            echo 'Hello from Stage: Build'
+            // sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
         }
         if (currentBuild.result == 'UNSTABLE') return
         
 
         // Stage: Test
         stage('Test') {
-            try {
-                sh '''
-                mkdir -p test-reports
-                pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
-                '''
-            } finally {
-                junit 'test-reports/results.xml'
-            }
+            echo 'Hello from Stage: Test'
+            // try {
+            //     sh '''
+            //     mkdir -p test-reports
+            //     pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+            //     '''
+            // } finally {
+            //     junit 'test-reports/results.xml'
+            // }
         }
         if (currentBuild.result == 'UNSTABLE') return
 
 
-        // Stage: Deliver
-        stage('Deliver') {
-            try {
-                sh 'pyinstaller --onefile sources/add2vals.py'
+        // // Stage: Deliver
+        // stage('Deliver') {
+        //     try {
+        //         sh 'pyinstaller --onefile sources/add2vals.py'
 
-                archiveArtifacts 'dist/add2vals'
-            } catch(err) {
-                currentBuild.result = 'FAILURE'
-                throw err
-            }
+        //         archiveArtifacts 'dist/add2vals'
+        //     } catch(err) {
+        //         currentBuild.result = 'FAILURE'
+        //         throw err
+        //     }
+        // }
+        // if (currentBuild.result == 'UNSTABLE') return
+
+        // Stage: Deploy
+        stage('Deploy') {
+            echo 'Hello from Stage: Deploy'
         }
         if (currentBuild.result == 'UNSTABLE') return
-        
+
     } // end of dockerImage
 }
