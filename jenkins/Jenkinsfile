@@ -11,57 +11,88 @@ node {
 
         // Stage: Debug
         stage('Debug'){
-            echo 'Hello from Stage: Debug'
-            // sh '''
-            // echo "=== DEBUG START ==="
-            // pwd
-            // ls -R
-            // cat test-reports/results.xml || echo "NO REPORT FILE"
-            // echo "=== DEBUG END ==="
-            // '''
+            // echo 'Hello from Stage: Debug'
+            sh '''
+            echo "=== DEBUG START ==="
+            pwd
+            ls -R
+            cat test-reports/results.xml || echo "NO REPORT FILE"
+            echo "=== DEBUG END ==="
+            '''
         }
 
 
         // Stage: Build
         stage('Build') {
-            echo 'Hello from Stage: Build'
-            // sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+            // echo 'Hello from Stage: Build'
+
+            echo "=== BUILD START ==="
+            sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+            echo "=== BUILD END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
         
 
         // Stage: Test
         stage('Test') {
-            echo 'Hello from Stage: Test'
-            // try {
-            //     sh '''
-            //     mkdir -p test-reports
-            //     pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
-            //     '''
-            // } finally {
-            //     junit 'test-reports/results.xml'
-            // }
+            // echo 'Hello from Stage: Test'
+            
+            echo "=== DEPLOY START ==="
+            try {
+                sh '''
+                mkdir -p test-reports
+                pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                '''
+            } finally {
+                junit 'test-reports/results.xml'
+            }
+            echo "=== DEPLOY END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
 
 
-        // // Stage: Deliver
-        // stage('Deliver') {
-        //     try {
-        //         sh 'pyinstaller --onefile sources/add2vals.py'
+        // Stage: Deliver
+        stage('Deliver') {
+            // echo 'Hello from Stage: Deliver'
 
-        //         archiveArtifacts 'dist/add2vals'
-        //     } catch(err) {
-        //         currentBuild.result = 'FAILURE'
-        //         throw err
-        //     }
-        // }
-        // if (currentBuild.result == 'UNSTABLE') return
+            echo "=== DELIVER START ==="
+            try {
+                // make python file into executable
+                sh 'pyinstaller --onefile sources/add2vals.py'
+
+                archiveArtifacts artifacts 'dist/add2vals.exe'
+            } catch(err) {
+                currentBuild.result = 'FAILURE'
+                throw err
+            }
+            echo "=== DELIVER END ==="
+        }
+        if (currentBuild.result == 'UNSTABLE') return
 
         // Stage: Deploy
         stage('Deploy') {
-            echo 'Hello from Stage: Deploy'
-            input message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)'
+
+            // echo 'Hello from Stage: Deploy'
+
+            echo "=== DEPLOY START ==="
+            bat 'start /B dist/add2vals.exe' // run the app in the background
+            try{
+                // set timer for timeout
+                timeout(time: 5, unit: 'MINUTES'){
+                    
+                    input(
+                        message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
+                        ok: 'Stop App'
+                    )
+                } // end of timeout
+            } finally {
+                // notif of forcing the app to stop running
+                echo 'Start the application.'
+
+                // stop the app
+                bat 'taskkill /F /IM add2vals.exe'
+            }
+            echo "=== DEPLOY END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
 
