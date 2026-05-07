@@ -73,9 +73,29 @@ node {
                 currentBuild.result = 'FAILURE'
                 throw err
             }
+
             echo "=== DELIVER END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
+
+
+        // Stage: Manual Approval
+        stage('Manual Approval') {
+
+            echo "=== MANUAL APPROVAL START ==="
+            
+            // set timer for timeout
+            timeout(time: 2, unit: 'MINUTES'){
+                    
+                input(
+                    message: 'Artifact aplikasi siap di-deploy, lanjutkan proses?',
+                    ok: 'Deploy'
+                )
+            } // end of timeout
+
+            echo "=== MANUAL APPROVAL END ==="
+        }
+
 
         // Stage: Deploy
         stage('Deploy') {
@@ -92,7 +112,7 @@ node {
             
             try{
                 // set timer for timeout
-                timeout(time: 5, unit: 'MINUTES'){
+                timeout(time: 1, unit: 'MINUTES'){
                     
                     input(
                         message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
@@ -111,6 +131,8 @@ node {
             echo "=== DEPLOY END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
+
+        // monitoring pipeline with prometeus and grafana
 
     } // end of dockerImage
 }
