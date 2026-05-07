@@ -58,10 +58,17 @@ node {
             echo "=== DELIVER START ==="
             try {
                 // make python file into executable
-                sh 'pyinstaller --onefile sources/add2vals.py'
+                sh '''
+                    rm -rf build dist
+                    pyinstaller --onefile sources/add2vals.py
+                '''
 
-                archiveArtifacts artifacts: 'dist/add2vals.exe'
-                // archiveArtifacts artifacts: 'dist/add2vals'
+                // check directory
+                echo "check generated folder and files"
+                sh 'ls -R dist'
+
+                // produce
+                archiveArtifacts artifacts: 'dist/add2vals'
             } catch(err) {
                 currentBuild.result = 'FAILURE'
                 throw err
@@ -76,8 +83,13 @@ node {
             // echo 'Hello from Stage: Deploy'
 
             echo "=== DEPLOY START ==="
-            sh 'start /B dist/add2vals.exe' // run the app in the background
-            // sh 'start /B dist/add2vals' // run the app in the background
+            
+            // run the app in the background
+            sh '''
+                chmod +x dist/add2vals
+                nohup ./dist/add2vals > app.log 2>&1 &
+            '''
+            
             try{
                 // set timer for timeout
                 timeout(time: 5, unit: 'MINUTES'){
@@ -89,10 +101,12 @@ node {
                 } // end of timeout
             } finally {
                 // notif of forcing the app to stop running
-                echo 'Start the application.'
+                echo 'Stop the application.'
 
                 // stop the app
-                sh 'taskkill /F /IM add2vals.exe'
+                sh '''
+                    pkill -f add2vals || true
+                '''
             }
             echo "=== DEPLOY END ==="
         }
