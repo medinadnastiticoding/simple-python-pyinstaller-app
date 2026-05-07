@@ -76,8 +76,8 @@ node {
             // echo 'Hello from Stage: Deploy'
 
             echo "=== DEPLOY START ==="
-            // bat 'start /B dist/add2vals.exe' // run the app in the background
-            bat 'start /B dist/add2vals' // run the app in the background
+            // sh 'start /B dist/add2vals.exe' // run the app in the background
+            sh 'start /B dist/add2vals' // run the app in the background
             try{
                 // set timer for timeout
                 timeout(time: 5, unit: 'MINUTES'){
