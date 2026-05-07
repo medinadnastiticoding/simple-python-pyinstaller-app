@@ -60,7 +60,8 @@ node {
                 // make python file into executable
                 sh 'pyinstaller --onefile sources/add2vals.py'
 
-                archiveArtifacts artifacts: 'dist/add2vals.exe'
+                // archiveArtifacts artifacts: 'dist/add2vals.exe'
+                archiveArtifacts artifacts: 'dist/add2vals'
             } catch(err) {
                 currentBuild.result = 'FAILURE'
                 throw err
@@ -75,7 +76,8 @@ node {
             // echo 'Hello from Stage: Deploy'
 
             echo "=== DEPLOY START ==="
-            bat 'start /B dist/add2vals.exe' // run the app in the background
+            // bat 'start /B dist/add2vals.exe' // run the app in the background
+            bat 'start /B dist/add2vals' // run the app in the background
             try{
                 // set timer for timeout
                 timeout(time: 5, unit: 'MINUTES'){
