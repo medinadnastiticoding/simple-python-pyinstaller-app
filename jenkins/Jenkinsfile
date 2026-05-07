@@ -96,7 +96,7 @@ node {
                     
                     input(
                         message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
-                        ok: 'Stop App'
+                        ok: 'Proceed'
                     )
                 } // end of timeout
             } finally {
