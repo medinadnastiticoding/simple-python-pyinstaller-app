@@ -97,7 +97,7 @@ node {
                 if (err.toString().contains('Timeout')) {
                     echo "Batas waktu untuk Approval sudah tercapai. Deployment harus disetujui dalam waktu 15 menit."
                 } else {
-                    echo "Deployment untuk aplikasi berhasil dibatalkan."
+                    echo "Deployment aplikasi berhasil dibatalkan."
                 }
 
                 currentBuild.result = 'ABORTED'
@@ -142,8 +142,6 @@ node {
             echo "=== DEPLOY END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
-
-        // monitoring pipeline with prometeus and grafana
 
     } // end of dockerImage
 }
