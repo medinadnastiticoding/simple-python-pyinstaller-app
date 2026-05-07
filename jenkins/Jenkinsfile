@@ -61,6 +61,7 @@ node {
         // Stage: Deploy
         stage('Deploy') {
             echo 'Hello from Stage: Deploy'
+            input message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)'
         }
         if (currentBuild.result == 'UNSTABLE') return
 
