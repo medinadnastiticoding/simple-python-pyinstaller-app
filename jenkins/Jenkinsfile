@@ -88,7 +88,7 @@ node {
                 // set timer for timeout
                 timeout(time: 1, unit: 'MINUTES') {
                     input(
-                        message: 'Artifact aplikasi siap di-deploy, lanjutkan proses?',
+                        message: 'Aplikasi siap di-deploy, lanjutkan proses?',
                         ok: 'Deploy'
                     )
                 } // end of timeout
@@ -97,7 +97,7 @@ node {
                 if (err.toString().contains('Timeout')) {
                     echo "Batas waktu untuk Approval sudah tercapai. Deployment harus disetujui dalam waktu 15 menit."
                 } else {
-                    echo "Approval untuk deployment aplikasi dibatalkan."
+                    echo "Deployment untuk aplikasi berhasil dibatalkan."
                 }
 
                 currentBuild.result = 'ABORTED'
