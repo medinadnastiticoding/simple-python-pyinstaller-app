@@ -81,8 +81,8 @@ node {
                 // set timer for timeout
                 timeout(time: 1, unit: 'MINUTES') {
                     input(
-                        message: 'Aplikasi siap di-deploy, lanjutkan proses?',
-                        ok: 'Deploy'
+                        message: 'Lanjutkan ke tahap Deploy?',
+                        ok: 'Proceed'
                     )
                 } // end of timeout
             } catch(err) {
@@ -112,23 +112,23 @@ node {
                 nohup ./dist/add2vals > app.log 2>&1 &
             '''
             
-            try{
-                // set timer for timeout
-                timeout(time: 1, unit: 'MINUTES') {
-                    input(
-                        message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
-                        ok: 'Proceed'
-                    )
-                } // end of timeout
-            } finally {
-                // notif of forcing the app to stop running
-                echo 'Aplikasi berhenti dijalankan.'
+            // delaying the execution of pipeline with sleep
+            sleep(time: 1, unit: 'MINUTES')
 
-                // stop the app
-                sh '''
-                    pkill -f add2vals || true
-                '''
-            }
+            // // delaying the execution of pipeline with input message
+            // input(
+            //     message: 'Sudah selesai menggunakan Aplikasi? (Klik "Proceed" untuk mengakhiri)',
+            //     ok: 'Proceed'
+            // )
+            
+            // notif of the app stop running
+            echo 'Aplikasi berhenti dijalankan.'
+
+            // stop the app
+            sh '''
+                pkill -f add2vals || true
+            '''
+            
             echo "=== DEPLOY END ==="
         }
         if (currentBuild.result == 'UNSTABLE') return
